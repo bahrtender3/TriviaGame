@@ -10,27 +10,30 @@ var app = {
 		intervalId: null,
 		timerRunning: false,
 		timeRemaining: 30,
-		updateHTML: function(){
+		updateHTML: function () {
 			$('#timer').html(app.timer.timeRemaining);
 		},
-		startTimer: function(){
-			if(!app.timer.timerRunning){
+		startTimer: function () {
+			if (!app.timer.timerRunning) {
 				app.timer.intervalId = setInterval(app.timer.timeMinus, 1000);
 				app.timer.timerRunning = true;
-				
 			};
 		},
-		stopTimer: function(){
+		stopTimer: function () {
 			clearInterval(app.timer.intervalId);
 			app.timer.timerRunning = false;
 		},
 
-		timeMinus: function(){
-			app.timer.timeRemaining --;
+		timeMinus: function () {
+			app.timer.timeRemaining--;
 			app.timer.updateHTML();
+			if (app.timer.timeRemaining < 1) {
+				app.timer.stopTimer();
+				app.wrongAnswer();
+			};
 		},
 
-		reset: function(){
+		reset: function () {
 			app.timer.timeRemaining = 30;
 		}
 
@@ -42,7 +45,7 @@ var app = {
 			questionText: "the answer is number 1",
 			possibleAnswers: [
 				{
-					answer: "1",
+					answer: "blay blabyablaybablyablaybalyblayb",
 					correct: true,
 				},
 				{
@@ -58,8 +61,8 @@ var app = {
 					correct: false,
 				}
 			],
-			answerCorrectPic: "../images/correct.gif",
-			answerWrongPic: "../images/wrong.gif"
+			answerCorrectPic: "assets/images/correct.gif",
+			answerWrongPic: "assets/images/wrong.gif"
 		},
 		{
 			questionText: "the answer is number 2",
@@ -81,8 +84,8 @@ var app = {
 					correct: false,
 				}
 			],
-			answerCorrectPic: "../images/correct.gif",
-			answerWrongPic: "../images/wrong.gif"
+			answerCorrectPic: "assets/images/correct.gif",
+			answerWrongPic: "assets/images/wrong.gif"
 		},
 		{
 			questionText: "the answer is number 3",
@@ -104,8 +107,8 @@ var app = {
 					correct: false,
 				}
 			],
-			answerCorrectPic: "../images/correct.gif",
-			answerWrongPic: "../images/wrong.gif"
+			answerCorrectPic: "assets/images/correct.gif",
+			answerWrongPic: "assets/images/wrong.gif"
 		},
 		{
 			questionText: "the answer is number 4",
@@ -127,37 +130,70 @@ var app = {
 					correct: true,
 				}
 			],
-			answerCorrectPic: "../images/correct.gif",
-			answerWrongPic: "../images/wrong.gif"
+			answerCorrectPic: "assets/images/correct.gif",
+			answerWrongPic: "assets/images/wrong.gif"
 		}
 	],
 
-	genQuestionHTML: function(){
+	genQuestionHTML: function () {
 		var index = app.currentQuestionIndex;
 		var curQest = app.questions[index];
 		$('.question').html('<p>' + app.questions[index].questionText + '</p>');
 		for (var i = 0; i < curQest.possibleAnswers.length; i++) {
-			
+
 			var newButton = $('<button>');
-			newButton.addClass("btnAnswer");
+			newButton.attr("class", "btnAnswer");
 			newButton.attr("data-correct", curQest.possibleAnswers[i].correct);
 			newButton.text(curQest.possibleAnswers[i].answer);
-			$('.question').append($('<p>').html(newButton));		
-			
+			$('.question').append($('<p>').html(newButton));
+
 		};
-		 
+
+	},
+
+	correctAnswer: function (answer) {
+
+		var crtAns = $('<p>');
+		crtAns.html(answer);
+		var ansImg = $('<img>');
+		ansImg.attr('src', app.questions[app.currentQuestionIndex].answerCorrectPic);
+		ansImg.attr('alt', 'correct-image');
+		$('.question').append(crtAns);
+		$('.question').append(ansImg);
+
+
+
+	},
+
+	wrongAnswer: function(answer){
+
+		var crtAns = $('<p>');
+		crtAns.html(answer);
+		var ansImg = $('<img>');
+		ansImg.attr('src', app.questions[app.currentQuestionIndex].answerWrongPic);
+		ansImg.attr('alt', 'correct-image');
+		$('.question').append(crtAns);
+		$('.question').append(ansImg);
 	}
 };
 
-console.log("//-----------------------------------------working");
-app.timer.startTimer();
-console.log("1");
-app.genQuestionHTML();
-console.log("2");
+$('document').ready( function(){
 
+$('.btnStart').on('click', function () {
+	app.genQuestionHTML();
+	app.timer.startTimer();
+});
 
+$("body").on('click', '.btnAnswer', function() {
+	console.log("clicked");
+	console.log(this);
+	var answer = $(this).attr('data-correct');
+	console.log(answer);
+	if (answer == 'true') {
+		app.correctAnswer("Correct");
+	} else {
+		app.wrongAnswer("Wrong");
+	};
+});
 
-
-
-
-
+});
