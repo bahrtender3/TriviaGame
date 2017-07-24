@@ -20,8 +20,11 @@ var app = {
 			};
 		},
 		stopTimer: function () {
-			clearInterval(app.timer.intervalId);
-			app.timer.timerRunning = false;
+
+			if (app.timer.timerRunning) {
+				clearInterval(app.timer.intervalId);
+				app.timer.timerRunning = false;
+			};
 		},
 
 		timeMinus: function () {
@@ -29,7 +32,7 @@ var app = {
 			app.timer.updateHTML();
 			if (app.timer.timeRemaining < 1) {
 				app.timer.stopTimer();
-				app.wrongAnswer();
+				app.wrongAnswer("Time Ran Out!");
 			};
 		},
 
@@ -42,22 +45,22 @@ var app = {
 
 	questions: [
 		{
-			questionText: "the answer is number 1",
+			questionText: 'What does the word "Dinosaur" mean?',
 			possibleAnswers: [
 				{
-					answer: "blay blabyablaybablyablaybalyblayb",
+					answer: "Terrible Lizard",
 					correct: true,
 				},
 				{
-					answer: "2",
+					answer: "Terrible Breath",
 					correct: false,
 				},
 				{
-					answer: "3",
+					answer: "Terrible Two's",
 					correct: false,
 				},
 				{
-					answer: "4",
+					answer: "Terribly Old",
 					correct: false,
 				}
 			],
@@ -65,22 +68,22 @@ var app = {
 			answerWrongPic: "assets/images/wrong.gif"
 		},
 		{
-			questionText: "the answer is number 2",
+			questionText: "One of the heaviest dinosaurs, Brachiosaurus, weighed the same as?",
 			possibleAnswers: [
 				{
-					answer: "1",
+					answer: "10 Rhinos",
 					correct: false,
 				},
 				{
-					answer: "2",
+					answer: "17 African Elephants",
 					correct: true,
 				},
 				{
-					answer: "3",
+					answer: "12 Polar Bears",
 					correct: false,
 				},
 				{
-					answer: "4",
+					answer: "Your Mom",
 					correct: false,
 				}
 			],
@@ -88,22 +91,22 @@ var app = {
 			answerWrongPic: "assets/images/wrong.gif"
 		},
 		{
-			questionText: "the answer is number 3",
+			questionText: "An adult Stegosaurus had a brain the size of a... ?",
 			possibleAnswers: [
 				{
-					answer: "1",
+					answer: "Small Car",
 					correct: false,
 				},
 				{
-					answer: "2",
+					answer: "BasketBall",
 					correct: false,
 				},
 				{
-					answer: "3",
+					answer: "Lime",
 					correct: true,
 				},
 				{
-					answer: "4",
+					answer: "Walnut",
 					correct: false,
 				}
 			],
@@ -111,22 +114,22 @@ var app = {
 			answerWrongPic: "assets/images/wrong.gif"
 		},
 		{
-			questionText: "the answer is number 4",
+			questionText: "In which continent was the Velociraptor first found?",
 			possibleAnswers: [
 				{
-					answer: "1",
+					answer: "Americas",
 					correct: false,
 				},
 				{
-					answer: "2",
+					answer: "Austrailia",
 					correct: false,
 				},
 				{
-					answer: "3",
+					answer: "Africa",
 					correct: false,
 				},
 				{
-					answer: "4",
+					answer: "Asia",
 					correct: true,
 				}
 			],
@@ -137,63 +140,92 @@ var app = {
 
 	genQuestionHTML: function () {
 		var index = app.currentQuestionIndex;
-		var curQest = app.questions[index];
-		$('.question').html('<p>' + app.questions[index].questionText + '</p>');
-		for (var i = 0; i < curQest.possibleAnswers.length; i++) {
+		if (index < app.questions.length){
+			var curQest = app.questions[index];
+			$('.question').html("<h3>Time Remaining: <span id='timer'></span> Seconds</h3>")
+			$('.question').append('<h4 class="question-text">' + app.questions[index].questionText + '</p>');
+			for (var i = 0; i < curQest.possibleAnswers.length; i++) {
 
-			var newButton = $('<button>');
-			newButton.attr("class", "btnAnswer");
-			newButton.attr("data-correct", curQest.possibleAnswers[i].correct);
-			newButton.text(curQest.possibleAnswers[i].answer);
-			$('.question').append($('<p>').html(newButton));
+				var newButton = $('<button>');
+				newButton.attr("class", "btnAnswer");
+				newButton.attr("data-correct", curQest.possibleAnswers[i].correct);
+				newButton.text(curQest.possibleAnswers[i].answer);
+				$('.question').append($('<p>').html(newButton));
 
+			};
+			app.timer.reset();
+			app.timer.startTimer();
+		} else {
+			$('.question').html("<h3>Results:</h3>");
+			var percentage = (app.correctCount/app.questions.length);
+			percentage = (percentage*100).toFixed(1) + "%";
+			$('.question').append("<h3 class='percent'>" + percentage + "</h3>");
+			$('.question').append("<h3 class='correct'> Correct: " + app.correctCount + "</h3>");
+			$('.question').append("<h3 class='wrong'> Wrong: " + app.wrongCount + "</h3>");
+
+			var button = $('<button class="btnRestart">');
+			button.text("Restart");
+			$('.question').append(button);
 		};
 
 	},
 
 	correctAnswer: function (answer) {
 
-		var crtAns = $('<p>');
+		app.timer.stopTimer();
+		var crtAns = $('<h3>');
 		crtAns.html(answer);
 		var ansImg = $('<img>');
 		ansImg.attr('src', app.questions[app.currentQuestionIndex].answerCorrectPic);
 		ansImg.attr('alt', 'correct-image');
-		$('.question').append(crtAns);
+		$('.question').html(crtAns);
 		$('.question').append(ansImg);
-
-
+		app.currentQuestionIndex++;
+		app.correctCount++;
+		setTimeout(app.genQuestionHTML, 3000);
 
 	},
 
 	wrongAnswer: function(answer){
 
-		var crtAns = $('<p>');
+		app.timer.stopTimer();
+		var crtAns = $('<h3>');
 		crtAns.html(answer);
 		var ansImg = $('<img>');
 		ansImg.attr('src', app.questions[app.currentQuestionIndex].answerWrongPic);
 		ansImg.attr('alt', 'correct-image');
-		$('.question').append(crtAns);
+		$('.question').html(crtAns);
 		$('.question').append(ansImg);
+		app.currentQuestionIndex++;
+		app.wrongCount++;
+		setTimeout(app.genQuestionHTML, 3000);
+
 	}
 };
 
-$('document').ready( function(){
+$('document').ready(function () {
 
-$('.btnStart').on('click', function () {
-	app.genQuestionHTML();
-	app.timer.startTimer();
-});
+	$('.btnStart').on('click', function () {
+		app.genQuestionHTML();
+		// app.timer.startTimer();
+	});
 
-$("body").on('click', '.btnAnswer', function() {
-	console.log("clicked");
-	console.log(this);
-	var answer = $(this).attr('data-correct');
-	console.log(answer);
-	if (answer == 'true') {
-		app.correctAnswer("Correct");
-	} else {
-		app.wrongAnswer("Wrong");
-	};
-});
+	$("body").on('click', '.btnAnswer', function () {
+
+		var answer = $(this).attr('data-correct');
+		if (answer == 'true') {
+			app.correctAnswer("Correct");
+		} else {
+			app.wrongAnswer("Wrong");
+		};
+	});
+
+	$("body").on('click', '.btnRestart', function () {
+
+		app.correctCount = 0;
+		app.wrongCount = 0;
+		app.currentQuestionIndex = 0;
+		app.genQuestionHTML();
+	});
 
 });

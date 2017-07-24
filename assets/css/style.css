@@ -1,8 +1,96 @@
 
 html { 
-  background: url("../images/test.jpg") no-repeat center center fixed; 
+  background: url("../images/dino-background.jpg") no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.content {
+  background-color: rgba(10, 10, 10, 0.5);
+  color: rgb(171, 39, 21);
+  width: 560px;
+  height: 600px;
+  margin: 5% auto;
+  text-align: center;
+
+}
+.btnStart {
+  background-color: rgb(116, 81, 40);
+  border: none;
+  width: 300px;
+  height: 75px;
+  margin: 10% 5%;
+  font-family: 'Exo', sans-serif;
+  font-size: 25px;
+  border-radius: 15%;
+    
+}
+
+.btnStart:hover{
+  background-color: rgb(87, 53, 25);
+}
+
+h3 {
+  color: rgb(229, 89, 44);
+  font-family: 'Exo', sans-serif;
+  font-size: 20px;
+}
+#timer {
+  color: rgb(171, 39, 21);
+  font-size: 30px;
+}
+.question-text {
+  color: rgb(234, 175, 57);
+  font-family: 'Chewy', cursive;
+  font-size: 30px;
+}
+
+.btnAnswer {
+  background-color: rgb(50, 84, 200);
+  width: 50%;
+  height: 50px;
+  border-radius: 10%;
+
+}
+.btnAnswer:hover {
+  background-color: rgb(25, 50, 120);
+}
+
+img {
+  width: 400px;
+  height: auto;
+}
+/* font-family: 'Chewy', cursive; */
+/* font-family: 'Exo', sans-serif; */
+.header {
+  font-family: 'Chewy', cursive;
+  font-size: 40px;
+  margin: 5px;
+}
+h1 {
+  margin: 5px;
+}
+
+.percent{
+  color: rgb(25, 50, 120);
+}
+
+.correct{
+  color: green;
+}
+
+.wrong{
+  color: rgb(171, 39, 21);  
+}
+
+.btnRestart {
+  background-color: rgb(50, 84, 200);
+  width: 50%;
+  height: 50px;
+
+}
+.btnRestart:hover {
+  background-color: rgb(25, 50, 120);
 }
